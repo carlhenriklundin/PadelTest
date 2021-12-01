@@ -2,6 +2,7 @@
 
 namespace Padel
 {
+    public enum PadelScore { Zero, Fifteen, Thirty, Forty, Advantage, Game };
 
     public class Game
     {
@@ -19,11 +20,11 @@ namespace Padel
         public void Point(Player player)
         {
             if (gameFinished) throw new Exception(message: "The game is already over");
-            if (player != _player1 || player != _player2) throw new Exception(message: "Unknown Player");
+            if (player != _player1 && player != _player2) throw new Exception(message: "Unknown Player");
             
             player.Point();
 
-            if (_player1.Score._Score == 4 && _player1.Score._Score == 4)
+            if (_player1.Score._Score == 4 && _player2.Score._Score == 4)
             {
                 _player1.DecreasePoint();
                 _player2.DecreasePoint();
@@ -34,11 +35,15 @@ namespace Padel
 
         public (PadelScore, PadelScore) Score()
         {
-            return (_player1.Score._PadelScore, _player2.Score._PadelScore);
+            PadelScore player1Score = (PadelScore)_player1.Score._Score;
+            PadelScore player2Score = (PadelScore)_player2.Score._Score;
+
+            return (player1Score, player2Score);
         }
 
         public string ScoreString()
         {
+            
             if (_player1.Score._Score >= 4 && _player1.Score._Score - _player2.Score._Score >= 2)
             {
                 gameFinished = true;
@@ -53,6 +58,7 @@ namespace Padel
             { 
                 return "Invalid result"; 
             }
+
         }
     }
 }

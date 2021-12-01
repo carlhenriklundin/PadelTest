@@ -8,7 +8,7 @@ namespace Padel
 
         public Player(string name)
         {
-            if (string.IsNullOrEmpty(name) || name.Length > 20) throw new Exception(message: "The player name does not meet the rules");
+            if (String.IsNullOrWhiteSpace(name) || name.Length > 20) throw new Exception(message: "The player name does not meet the rules");
             Name = name;
             Score = new Score();
         }

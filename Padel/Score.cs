@@ -5,7 +5,7 @@ namespace Padel
     
     public class Score
     {
-        public int _Score;
+        public int _Score { get; set; }
 
     public void Increase()
         {

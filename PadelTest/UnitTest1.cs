@@ -22,12 +22,31 @@ namespace PadelTest
         {
             Action act1 = () => new Player(null);
             Action act2 = () => new Player("");
-            Action act3 = () => new Player("This name has too many letters");
+            Action act3 = () => new Player(" ");
+            Action act4 = () => new Player("This name has to many letters");
 
             Assert.Throws<Exception>(act1);
             Assert.Throws<Exception>(act2);
             Assert.Throws<Exception>(act3);
+            Assert.Throws<Exception>(act4);
         }
+
+        [Fact]
+        public void Test_ConstructorNameToManyLetters()
+        {
+            Action act1 = () => new Player("ABCDEFGHIJKLMNOPQRSTU"); //21 letters
+            
+            Assert.Throws<Exception>(act1);
+        }
+
+        [Fact]
+        public void Test_ConstructorNameMaximumNumberOfLetters()
+        {
+            Player player1 = new Player("ABCDEFGHIJKLMNOPQRST"); //20 letters
+
+            Assert.Equal("ABCDEFGHIJKLMNOPQRST", player1.Name);
+        }
+
 
         [Fact]
         public void Test_PointInConstructor()
@@ -102,7 +121,53 @@ namespace PadelTest
 
             Assert.Equal(expected, score1._Score);
         }
+
+        
     }
+
+    public class GameTests2
+    {
+        [Fact]
+        public void Test_Constructor()
+        {
+            Player player1 = new Player("Test Player 1");
+            Player player2 = new Player("Test Player 2");
+
+            Game testGame = new Game(player1,player2);
+
+            
+            Assert.Equal("Test Player 1", testGame.Player1.Name);
+            Assert.Equal("Test Player 2", testGame.Player2.Name);
+            Assert.Equal(0, testGame.Player1.Score._Score);
+            Assert.Equal(0, testGame.Player2.Score._Score);
+        }
+
+        [Fact]
+        public void Test_ConstructorWithInvalidPlayer()
+        {
+            Player player2 = new Player("Test Player 2");
+
+            Action act = () => new Game(new Player(null), player2);
+
+            Assert.Throws<Exception>(act);
+        }
+
+        [Fact]
+        public void Test_ConstructorWithSamePlayer()
+        {
+            Player player1 = new Player("Test Player 1");
+
+            Action act = () => new Game(player1, player1);
+
+            Assert.Throws<Exception>(act);
+        }
+
+        
+    }
+
+
+
+
 
 
     public class GameTests
@@ -141,6 +206,19 @@ namespace PadelTest
             Assert.Equal((PadelScore.Thirty, PadelScore.Fifteen), gameScore);
         }
 
+        [Fact]
+        public void Test4()
+        {
+            Player player1 = new Player("Player 1");
+            Player player2 = new Player("Player 1");
+
+            var game = new Game(player1, player2);
+            game.Point(new Player("Player3"));
+
+
+            var result = game.ScoreString();
+            Assert.Equal("Player 1 wins", result);
+        }
 
         [Fact]
         public void Test2()

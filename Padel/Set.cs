@@ -7,8 +7,10 @@ namespace Padel
     {
         List<Game> _games = new List<Game>();
 
+
         public void Point(Player player)
         {
+
             _games[0].Point(player);
         }
     }

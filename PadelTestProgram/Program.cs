@@ -11,16 +11,16 @@ namespace PadelTestProgram
 
             for (int i = 1; i < 10; i++)
             {
+                int number = 1;
                 Player[] players = new Player[] { new Player("Player 1"), new Player("Player 2") };
                 var game = new Game(players[0], players[1]);
 
                 while(!game.gameFinished)
                 {
                     var rnd = new Random();
-
                     game.Point(players[rnd.Next(0, 2)]);
 
-                    Console.WriteLine($"Ställningen: {game.Score()}");
+                    Console.WriteLine($"Boll {number++}: {game.Score()}");
                 }
 
                 Console.WriteLine(game.ScoreString());

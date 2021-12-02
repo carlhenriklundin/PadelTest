@@ -14,6 +14,7 @@ namespace Padel
 
         public void Decrease()
         {
+            if (_Score == 0) throw new Exception(message: "Players Score can not be negative");
             _Score--;
         }
     }

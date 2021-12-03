@@ -132,7 +132,7 @@ namespace PadelTest
 
     }
 
-    public class GameTests2
+    public class GameTests
     {
         [Fact]
         public void Test_Constructor()
@@ -238,7 +238,7 @@ namespace PadelTest
             Game2.Point(Player2); // 40-A
             Game2.Point(Player2); // players2 vinner gamet
             var result = Game2.ScoreString(); // ska bli player2
-            Assert.Equal("Player 2 wins", result);
+            Assert.Equal("Player 2 wins the game", result);
         }
 
 
@@ -255,7 +255,7 @@ namespace PadelTest
             Game1.Point(Player1); // 40-15
             Game1.Point(Player1); // players1 vinner gamet
             var result = Game1.ScoreString(); // ska bli player1
-            Assert.Equal("Player 1 wins", result);
+            Assert.Equal("Player 1 wins the game", result);
         }
 
         [Fact]
@@ -276,7 +276,7 @@ namespace PadelTest
             Game2.Point(Player2); // A-40
             Game2.Point(Player2); // player2 vinner gamet
             var result = Game2.ScoreString(); // ska bli player2
-            Assert.Equal("Player 2 wins", result);
+            Assert.Equal("Player 2 wins the game", result);
         }
 
         [Fact]
@@ -449,6 +449,40 @@ namespace PadelTest
             (PadelScore, PadelScore) gamescore = game.Score();
             Assert.Equal((PadelScore.Forty, PadelScore.Forty), gamescore);
 
+        }
+
+
+    }
+
+    public class MatchTest
+    {
+        [Fact]
+        public void Test_ConstructorName()
+        {
+            Player player1 = new Player("Test Player 1");
+            Player player2 = new Player("Test Player 2");
+
+            var match = new Match(5, player1, player2);
+
+            Assert.Equal("Test Player 1", match._player1.Name);
+            Assert.Equal("Test Player 2", match._player2.Name);
+            Assert.Equal(5, match._sets.Count);
+
+        }
+
+        [Fact]
+        public void Test_ConstructorInvalidNumberOfSet()
+        {
+            Player player1 = new Player("Test Player 1");
+            Player player2 = new Player("Test Player 2");
+
+            Action act1 = () => new Match(2, player1, player2);
+            Action act2 = () => new Match(4, player1, player2);
+            Action act3 = () => new Match(7, player1, player2);
+
+            Assert.Throws<Exception>(act1);
+            Assert.Throws<Exception>(act2);
+            Assert.Throws<Exception>(act3);
         }
 
 

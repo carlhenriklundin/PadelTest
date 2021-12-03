@@ -7,26 +7,19 @@ namespace PadelTestProgram
     {
         static void Main(string[] args)
         {
-            
+            Player[] players = new Player[] { new Player("Player 1"), new Player("Player 2") };
 
-            for (int i = 1; i < 10; i++)
+            Match match = new Match(3, players[0], players[1]);
+
+            while (!match.matchOver)
             {
-                int number = 1;
-                Player[] players = new Player[] { new Player("Player 1"), new Player("Player 2") };
-                var game = new Game(players[0], players[1]);
+                var rnd = new Random();
 
-                while(!game.gameFinished)
-                {
-                    var rnd = new Random();
-                    game.Point(players[rnd.Next(0, 2)]);
-
-                    Console.WriteLine($"Boll {number++}: {game.Score()}");
-                }
-
-                Console.WriteLine(game.ScoreString());
-                Console.WriteLine("------------------------");
-                Console.WriteLine();
+                match.Point(players[rnd.Next(0, 2)]);
+               
             }
+            Console.WriteLine(match.ScoreString());
+            
         }
     }
 }

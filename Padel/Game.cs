@@ -12,7 +12,9 @@ namespace Padel
         public Player Player1 => _player1;
         public Player Player2 => _player2;
 
-        public bool gameFinished = false;
+        public bool gameOver = false;
+        public bool tiebreak = false;
+        private int minPointToWIn { get { if (tiebreak) return 7; else return 4; } }
 
        public Game(Player player1, Player player2)
         {
@@ -23,7 +25,7 @@ namespace Padel
 
         public void Point(Player player)
         {
-            if (gameFinished) throw new Exception(message: "The game is already over");
+            if (gameOver) throw new Exception(message: "The game is already over");
             if (player != _player1 && player != _player2) throw new Exception(message: "Unknown Player");
             
             player.Point();
@@ -45,20 +47,22 @@ namespace Padel
             return (player1Score, player2Score);
         }
 
+        
+
         public string ScoreString()
         {
             
-            if (_player1.Score._Score >= 4 && _player1.Score._Score - _player2.Score._Score >= 2)
+            if (_player1.Score._Score >= minPointToWIn && _player1.Score._Score - _player2.Score._Score >= 2)
             {
-                gameFinished = true;
+                gameOver = true;
                 _player1.Score._Score = 5;
-                return "Player 1 wins";
+                return "Player 1 wins the game";
             }
-            else if (_player2.Score._Score >= 4 && _player2.Score._Score - _player1.Score._Score >= 2)
+            else if (_player2.Score._Score >= minPointToWIn && _player2.Score._Score - _player1.Score._Score >= 2)
             {
-                gameFinished = true;
+                gameOver = true;
                 _player2.Score._Score = 5;
-                return "Player 2 wins"; 
+                return "Player 2 wins the game"; 
             }
             else 
             { 

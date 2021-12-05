@@ -21,6 +21,8 @@ namespace Padel
             if (player1 == player2) throw new Exception(message: "Players 1 and 2 are the same player");
             _player1 = player1;
             _player2 = player2;
+            _player1.Score = new Score();
+            _player2.Score = new Score();
         }
 
         public void Point(Player player)
@@ -30,7 +32,7 @@ namespace Padel
             
             player.Point();
 
-            if (_player1.Score._Score == 4 && _player2.Score._Score == 4)
+            if (_player1.Score._Score == 4 && _player2.Score._Score == 4 && !tiebreak)
             {
                 _player1.DecreasePoint();
                 _player2.DecreasePoint();
@@ -55,13 +57,13 @@ namespace Padel
             if (_player1.Score._Score >= minPointToWIn && _player1.Score._Score - _player2.Score._Score >= 2)
             {
                 gameOver = true;
-                _player1.Score._Score = 5;
+                if (!tiebreak) _player1.Score._Score = 5;
                 return "Player 1 wins the game";
             }
             else if (_player2.Score._Score >= minPointToWIn && _player2.Score._Score - _player1.Score._Score >= 2)
             {
                 gameOver = true;
-                _player2.Score._Score = 5;
+                if (!tiebreak) _player2.Score._Score = 5;
                 return "Player 2 wins the game"; 
             }
             else 

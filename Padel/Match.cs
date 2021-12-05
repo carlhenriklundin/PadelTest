@@ -11,6 +11,7 @@ namespace Padel
         public (Score player1, Score player2) matchScore;
         public bool matchOver = false;
         public int setIndex = 0;
+        public string result => ResultString();
         
         public Match(int numberOfSets, Player player1, Player player2)
         {
@@ -35,6 +36,7 @@ namespace Padel
             if (player != _player1 && player != _player2) throw new Exception(message: "Unknown Player");
 
              _sets[setIndex].Point(player);
+
             
             if (_sets[setIndex].setOver == true)
             {
@@ -46,7 +48,6 @@ namespace Padel
                 {
                     matchScore.player2.Increase();
                 }
-                  
             setIndex++;
             ScoreString();
             }
@@ -68,6 +69,26 @@ namespace Padel
             {
                 return "Invalid result";
             }
+        }
+
+        public string ResultString()
+        {
+            string resultString = "";
+            if (matchOver) resultString += $"Matchscore: {matchScore.player1._Score}-{matchScore.player2._Score} ( ";
+            else resultString += $"The match is in progress - {ScoreString()}";
+
+            
+            for (int set = 0; set < setIndex; set++)
+            {
+                resultString += $"{_sets[set].setScore.player1._Score}-{_sets[set].setScore.player2._Score} ";
+            }
+
+            resultString += ")";
+
+            if (matchOver) resultString += $" - {ScoreString()}";
+            else resultString += $"The match is in progress!";
+
+            return resultString;
         }
 
     }

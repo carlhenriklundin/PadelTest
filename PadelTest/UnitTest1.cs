@@ -534,7 +534,7 @@ namespace PadelTest
         public void Test_ConstructorSameName()
         {
             Player player1 = new Player("Test Player 1");
-            Player player2 = new Player("Test Player 2");
+            Player player2 = new Player("Test Player 1");
 
             Action act = () => new Match(5, player1, player2);
 

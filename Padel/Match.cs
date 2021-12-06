@@ -16,6 +16,7 @@ namespace Padel
         public Match(int numberOfSets, Player player1, Player player2)
         {
             if (player1 == player2) throw new Exception(message: "Players 1 and 2 are the same player");
+            if (player1.Name == player2.Name) throw new Exception(message: "Players 1 and 2 have same name");
             if (numberOfSets != 5 && numberOfSets != 3) throw new Exception(message: "A match can only have 3 or 5 sets");
             
             _sets = new List<Set>(numberOfSets);
@@ -33,6 +34,7 @@ namespace Padel
         public void Point(Player player)
         {
             if (matchOver) throw new Exception(message: "The match is already over");
+
             if (player != _player1 && player != _player2) throw new Exception(message: "Unknown Player");
 
              _sets[setIndex].Point(player);
@@ -67,16 +69,14 @@ namespace Padel
             }
             else
             {
-                return "Invalid result";
+                return $"{matchScore.player1._Score}-{matchScore.player2._Score} (the match is in progress).";
             }
         }
 
         public string ResultString()
         {
             string resultString = "";
-            if (matchOver) resultString += $"Matchscore: {matchScore.player1._Score}-{matchScore.player2._Score} ( ";
-            else resultString += $"The match is in progress - {ScoreString()}";
-
+            resultString += $"Matchscore: {matchScore.player1._Score}-{matchScore.player2._Score} ( ";
             
             for (int set = 0; set < setIndex; set++)
             {
@@ -84,9 +84,6 @@ namespace Padel
             }
 
             resultString += ")";
-
-            if (matchOver) resultString += $" - {ScoreString()}";
-            else resultString += $"The match is in progress!";
 
             return resultString;
         }

@@ -18,6 +18,7 @@ namespace Padel
 
        public Game(Player player1, Player player2)
         {
+            if (player1.Name == player2.Name) throw new Exception(message: "Players 1 and 2 have same name");
             if (player1 == player2) throw new Exception(message: "Players 1 and 2 are the same player");
             _player1 = player1;
             _player2 = player2;
@@ -68,7 +69,7 @@ namespace Padel
             }
             else 
             { 
-                return "Invalid result"; 
+                return $"{Score()}"; 
             }
 
         }

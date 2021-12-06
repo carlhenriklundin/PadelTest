@@ -466,25 +466,212 @@ namespace PadelTest
 
             Assert.Equal("Test Player 1", match._player1.Name);
             Assert.Equal("Test Player 2", match._player2.Name);
-            Assert.Equal(5, match._sets.Count);
-
         }
 
         [Fact]
-        public void Test_ConstructorInvalidNumberOfSet()
+        public void Test_ConstructorWithInvalidPlayer()
         {
-            Player player1 = new Player("Test Player 1");
             Player player2 = new Player("Test Player 2");
 
-            Action act1 = () => new Match(2, player1, player2);
-            Action act2 = () => new Match(4, player1, player2);
-            Action act3 = () => new Match(7, player1, player2);
+            Action act = () => new Match(5, new Player(null), player2);
 
-            Assert.Throws<Exception>(act1);
-            Assert.Throws<Exception>(act2);
-            Assert.Throws<Exception>(act3);
+            Assert.Throws<Exception>(act);
+        }
+
+        [Fact]
+        public void Test_ConstructorWithSamePlayer()
+        {
+            Player player1 = new Player("Test Player 2");
+
+            Action act = () => new Match(5, player1, player1);
+
+            Assert.Throws<Exception>(act);
+        }
+
+        [Theory]
+        [InlineData (5, 5)]
+        [InlineData (3, 3)]
+        public void Test_ConstructorCorrectNumberOfSet(int numberOfSet, int expected)
+        {
+            var match = new Match(numberOfSet, new Player("Player 1"), new Player("Player 2"));
+
+            Assert.Equal(expected, match._sets.Count);
         }
 
 
+        [Theory]
+        [InlineData(-1)]
+        [InlineData(0)]
+        [InlineData(2)]
+        [InlineData(4)]
+        [InlineData(6)]
+        public void Test_ConstructorInvalidNumberOfSet(int set)
+        {
+            Action act = () => new Match(set, new Player("Test Player 1"), new Player("Test Player 2"));
+            
+            Assert.Throws<Exception>(act);
+        }
+
+        [Fact]
+        public void Test_ConstructorMatchScoreIsEmpty()
+        {
+            var match = new Match(5, new Player("Player 1"), new Player("Player 2"));
+
+            Assert.Equal(0, match.matchScore.player1._Score);
+            Assert.Equal(0, match.matchScore.player2._Score);
+        }
+
+        [Theory]
+        [InlineData (3, 2)]
+        [InlineData (5, 3)]
+        public void Test_ScoreStringPlayer1ShouldWin(int set, int player1Score)
+        {
+            var match = new Match(set, new Player("Player 1"), new Player("Player 2"));
+            match.matchScore.player1._Score = player1Score;
+
+            Assert.Equal("Player 1 wins the match", match.ScoreString());
+        }
+
+        [Theory]
+        [InlineData(3, 2)]
+        [InlineData(5, 3)]
+        public void Test_ScoreStringPlayer2ShouldWin(int set, int player2Score)
+        {
+            var match = new Match(set, new Player("Player 1"), new Player("Player 2"));
+            match.matchScore.player2._Score = player2Score;
+
+            Assert.Equal("Player 2 wins the match", match.ScoreString());
+            Assert.True(match.matchOver);
+        }
+
+        [Theory]
+        [InlineData(3, 1, 1)]
+        [InlineData(3, 0, 0)]
+        [InlineData(5, 2, 2)]
+        [InlineData(5, 0, 0)]
+        public void Test_ScoreStringMatchNotOver(int set, int player1Score, int player2Score)
+        {
+            var match = new Match(set, new Player("Player 1"), new Player("Player 2"));
+            match.matchScore.player1._Score = player1Score;
+            match.matchScore.player2._Score = player2Score;
+            match.ScoreString();
+
+            Assert.False(match.matchOver);
+        }
+
+        [Theory]
+        [InlineData(5, 0, 0)]
+        [InlineData(5, 1, 1)]
+        [InlineData(5, 2, 2)]
+        public void Test_ScoreStringResultWhenMatchIsNotOver(int set, int player1Score, int player2Score)
+        {
+            var match = new Match(set, new Player("Player 1"), new Player("Player 2"));
+            match.matchScore.player1._Score = player1Score;
+            match.matchScore.player2._Score = player2Score;
+            var result = match.ScoreString();
+
+            Assert.Equal($"{player1Score}-{player2Score} (the match is in progress).", result);
+        }
+
+
+        [Fact]
+        public void Test_PointMatchIsAlreadyOver()
+        {
+            var player1 = new Player("Player 1");
+            var player2 = new Player("Player 2");
+            var match = new Match(5, player1, player2);
+            match.matchOver = true;
+
+            Action act = () => match.Point(player1);
+
+            Assert.Throws<Exception>(act);
+        }
+
+        [Fact]
+        public void Test_PointUnknownPlayer()
+        {
+            var player1 = new Player("Player 1");
+            var player2 = new Player("Player 2");
+            var player3 = new Player("Player 3");
+            var match = new Match(5, player1, player2);
+            
+            Action act = () => match.Point(player3);
+
+            Assert.Throws<Exception>(act);
+        }
+
+        [Fact]
+        public void Test_Point_Player1ShouldHaveOnePointInGame1()
+        {
+            var player1 = new Player("Player 1");
+            var player2 = new Player("Player 2");
+            
+            var match = new Match(5, player1, player2);
+            match.Point(player1);
+
+            Assert.Equal(1, match._sets[0]._games[0].Player1.Score._Score);
+        }
+
+        [Fact]
+        public void Test_Point_Player2ShouldHaveOnePointInGame1()
+        {
+            var player1 = new Player("Player 1");
+            var player2 = new Player("Player 2");
+
+            var match = new Match(5, player1, player2);
+            match.Point(player2);
+
+            Assert.Equal(1, match._sets[0]._games[0].Player2.Score._Score);
+        }
+
+        [Fact]
+        public void Test_Point_Player1ShouldHaveOneMatchPointAndPlayer2Zero()
+        {
+            var player1 = new Player("Player 1");
+            var match = new Match(5, player1, new Player("Player 2"));
+            match._sets[0].setScore.player1._Score = 5;
+            match._sets[0]._games[0].Player1.Score._Score = 3;
+            match.Point(player1);
+
+            Assert.Equal(1, match.matchScore.player1._Score);
+            Assert.Equal(0, match.matchScore.player2._Score);
+        }
+
+        [Fact]
+        public void Test_Point_Player2ShouldHaveOneMatchPointAndPlayer1Zero()
+        {
+            var player2 = new Player("Player 2");
+            var match = new Match(5, new Player("Player 1"), player2);
+            match._sets[0].setScore.player2._Score = 5;
+            match._sets[0]._games[0].Player2.Score._Score = 3;
+            match.Point(player2);
+
+            Assert.Equal(1, match.matchScore.player2._Score);
+            Assert.Equal(0, match.matchScore.player1._Score);
+        }
+
+        [Theory]
+        [InlineData(6, 1, 6, 1, 6, 1, 6, 1, 6, 1)]
+        [InlineData(1, 6, 2, 6, 2, 6, 1, 6, 1, 6)]
+        [InlineData(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)]
+        public void Test_ResultString(int s1p1, int s1p2, int s2p1, int s2p2, int s3p1, int s3p2, int s4p1, int s4p2, int s5p1, int s5p2)
+        {
+            var match = new Match(5, new Player("Player 1"), new Player("Player 2"));
+            match.setIndex = 5;
+            match._sets[0].setScore.player1._Score = s1p1;
+            match._sets[0].setScore.player2._Score = s1p2;
+            match._sets[1].setScore.player1._Score = s2p1;
+            match._sets[1].setScore.player2._Score = s2p2;
+            match._sets[2].setScore.player1._Score = s3p1;
+            match._sets[2].setScore.player2._Score = s3p2;
+            match._sets[3].setScore.player1._Score = s4p1;
+            match._sets[3].setScore.player2._Score = s4p2;
+            match._sets[4].setScore.player1._Score = s5p1;
+            match._sets[4].setScore.player2._Score = s5p2;
+            match.ScoreString();
+
+            string expected = $"Matchscore: {match.matchScore.player1._Score}-{match.matchScore.player1._Score} ( {s1p1}-{s1p2} {s2p1}-{s2p2} {s3p1}-{s3p2} {s4p1}-{s4p2} {s5p1}-{s5p2} )";
+            Assert.Equal(expected, match.ResultString());
+        }
     }
 }

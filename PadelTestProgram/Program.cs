@@ -55,8 +55,8 @@ namespace PadelTestProgram
             Console.WriteLine();
 
 
-            // Kör 10 set.
-            for (int i = 0; i < 10; i++)
+            // Kör 20 set.
+            for (int i = 0; i < 20; i++)
             {
                 Set set = new Set(players[0], players[1]);
 
@@ -73,7 +73,9 @@ namespace PadelTestProgram
             Console.WriteLine();
             Console.WriteLine();
 
-            // Kör 10 matcher.
+            // Kör en match.
+                
+
             for (int i = 0; i < 10; i++)
             {
                 Match match = new Match(5, players[0], players[1]);
@@ -83,10 +85,11 @@ namespace PadelTestProgram
                     var rnd = new Random();
 
                     match.Point(players[rnd.Next(0, 2)]);
-                }
 
+                }
                 Console.WriteLine(match.ResultString());
             }
         }
+
     }
 }

@@ -15,6 +15,7 @@ namespace Padel
 
         public Set(Player player1, Player player2)
         {
+            if (player1.Name == player2.Name) throw new Exception(message: "Players 1 and 2 have same name");
             _player1 = player1;
             _player2 = player2;
             _games.Add(new Game(player1, player2));
@@ -63,12 +64,12 @@ namespace Padel
             else if ((setScore.player2._Score >= 6 && setScore.player2._Score - setScore.player1._Score >= 2) || setScore.player2._Score == 7)
             {
                 setOver = true;
-                if (_games[gameIndex-1].tiebreak == true) return $"Player 1 wins the set after Tiebreak";
+                if (_games[gameIndex-1].tiebreak == true) return $"Player 2 wins the set after Tiebreak";
                 return $"Player 2 wins the set";
             }
             else
             {
-                return "Invalid result";
+                return $"{setScore.player1._Score}-{setScore.player2._Score}";
             }
         }
 

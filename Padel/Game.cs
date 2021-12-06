@@ -69,7 +69,7 @@ namespace Padel
             }
             else 
             { 
-                return $"{Score()}"; 
+                return $"{Score().Item1.ToString()}-{Score().Item2.ToString()}"; 
             }
 
         }

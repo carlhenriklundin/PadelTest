@@ -29,22 +29,6 @@ namespace PadelTest
             Assert.Throws<Exception>(act3);
         }
 
-        [Fact]
-        public void Test_ConstructorNameToManyLetters()
-        {
-            Action act1 = () => new Player("123456789123456789123"); //21 letters
-            
-            Assert.Throws<Exception>(act1);
-        }
-
-        [Fact]
-        public void Test_ConstructorNameMaximumNumberOfLetters()
-        {
-            Player player1 = new Player("12345678912345678912"); //20 letters
-
-            Assert.Equal("12345678912345678912", player1.Name);
-        }
-
 
         [Fact]
         public void Test_PointInConstructor()
@@ -82,7 +66,16 @@ namespace PadelTest
             Assert.Equal(expected, player1.Score._Score);
         }
 
-    } 
+        [Fact]
+        public void Test_DecreasePointToNegative()
+        {
+            var player = new Player("Player");
+            Action act1 = () => player.DecreasePoint();
+
+            Assert.Throws<Exception>(act1);
+        }
+
+    }
 
     public class ScoreTest
     {
@@ -170,6 +163,15 @@ namespace PadelTest
         }
 
         [Fact]
+        public void Test_COnstructorSameName()
+        {
+            Player testPlayer1 = new Player("Test Player1");
+            Player testPlayer2 = new Player("Test Player1");
+            Action act = () => new Game(testPlayer1, testPlayer2);
+            Assert.Throws<Exception>(act);
+        }
+
+        [Fact]
         public void Test_Point_Game_Over()
         {
             Player player1 = new Player("Fredric");
@@ -221,6 +223,24 @@ namespace PadelTest
             Assert.Equal(3, player2.Score._Score);
         }
 
+        [Fact]
+        public void Test_Point_ScoreShouldNotDcreaseWhenScoreIs4_4AndItIsTiebreak()
+        {
+            Player player1 = new Player("Ferri");
+            Player player2 = new Player("Carl-Henrik");
+            var game = new Game(player1, player2);
+            game.tiebreak = true;
+            game.Point(player2);// 0-1
+            game.Point(player2);// 0-2
+            game.Point(player2);// 0-3
+            game.Point(player1);// 1-3
+            game.Point(player1);// 2-3
+            game.Point(player1);// 3-3
+            game.Point(player1);// 4-3
+            game.Point(player2);// 4-4
+            Assert.Equal(4, game.Player1.Score._Score);
+            Assert.Equal(4, game.Player2.Score._Score);
+        }
 
         [Fact]
         public void Test_ScoreString_NewGame_Player2Wins()
@@ -259,6 +279,28 @@ namespace PadelTest
         }
 
         [Fact]
+        public void Test_Player1WinsInTiebreak()
+        {
+            Player player1 = new Player("Ferri");
+            Player player2 = new Player("Carl-Henrik");
+            var game = new Game(player1, player2);
+
+            game.tiebreak = true;
+            game.Point(player2);// 0-1
+            game.Point(player2);// 0-2
+            game.Point(player2);// 0-3
+            game.Point(player1);// 1-3
+            game.Point(player1);// 2-3
+            game.Point(player1);// 3-3
+            game.Point(player1);// 4-3
+            game.Point(player1);// 5-3
+            game.Point(player1);// 6-3
+            game.Point(player1);// 7-3
+            var result = game.ScoreString();
+            Assert.Equal("Player 1 wins the game", result);
+        }
+
+        [Fact]
         public void Test_ScoreString_NewGame_Morethan_four_point()
         {
             Player Player1 = new Player("Fredric");
@@ -286,17 +328,17 @@ namespace PadelTest
             Player Player2 = new Player("Carl-Henrik");
             Game Game2 = new Game(Player1, Player2);
 
-            Game2.Point(Player1); // 0-15
-            Game2.Point(Player1); // 0-30
-            Game2.Point(Player1); // 0-40
-            Game2.Point(Player2); // 15-40
-            Game2.Point(Player2); // 30-40
+            Game2.Point(Player1); // 15-0
+            Game2.Point(Player1); // 30-0
+            Game2.Point(Player1); // 40-0
+            Game2.Point(Player2); // 40-15
+            Game2.Point(Player2); // 40-30
             Game2.Point(Player2); // 40-40
-            Game2.Point(Player2); // A-40
+            Game2.Point(Player2); // 40-A
             Game2.Point(Player1); // 40-40
-            Game2.Point(Player2); // A-40
+            Game2.Point(Player2); // 40-A
             var result = Game2.ScoreString(); // Ingen vinnare, fördel till player2
-            Assert.Equal("Invalid result", result);
+            Assert.Equal("Forty-Advance", result);
         }
 
         [Fact]
@@ -306,7 +348,7 @@ namespace PadelTest
             Player Player2 = new Player("Ferri");
             Game Game2 = new Game(Player1, Player2);
             var result = Game2.ScoreString();
-            Assert.Equal("Invalid result", result);
+            Assert.Equal("Zero-Zero", result);
         }
 
 
@@ -484,6 +526,17 @@ namespace PadelTest
             Player player1 = new Player("Test Player 2");
 
             Action act = () => new Match(5, player1, player1);
+
+            Assert.Throws<Exception>(act);
+        }
+
+        [Fact]
+        public void Test_ConstructorSameName()
+        {
+            Player player1 = new Player("Test Player 1");
+            Player player2 = new Player("Test Player 2");
+
+            Action act = () => new Match(5, player1, player2);
 
             Assert.Throws<Exception>(act);
         }

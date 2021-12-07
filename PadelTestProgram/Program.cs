@@ -74,21 +74,40 @@ namespace PadelTestProgram
             Console.WriteLine();
 
             // Kör en match.
-                
+
 
             for (int i = 0; i < 10; i++)
             {
-                Match match = new Match(5, players[0], players[1]);
+                Match match1 = new Match(5, players[0], players[1]);
+                while (!match1.matchOver)
+                {
+                    var rnd = new Random();
+                    match1.Point(players[rnd.Next(0, 2)]);
+                }
 
-                while (!match.matchOver)
+                Console.WriteLine("Slutresultat:");
+                Console.WriteLine(match1.ResultString());
+                Console.WriteLine();
+            }
+
+
+
+            Match match2 = new Match(5, players[0], players[1]);
+            while (!match2.matchOver)
                 {
                     var rnd = new Random();
 
-                    match.Point(players[rnd.Next(0, 2)]);
+                    match2.Point(players[rnd.Next(0, 2)]);
+                    if (!match2.matchOver) Console.WriteLine($"Matchpoängen just nu: {match2.ScoreString()}");
+                    if (!match2.matchOver) Console.WriteLine($"Setpoängen just nu:   {match2._sets[match2.setIndex].ScoreString()}");
+                    if (!match2.matchOver) Console.WriteLine($"Gamepoängen just nu:  {match2._sets[match2.setIndex]._games[match2._sets[match2.setIndex].gameIndex].ScoreString()}");
 
                 }
-                Console.WriteLine(match.ResultString());
-            }
+
+                Console.WriteLine();
+                Console.WriteLine("Slutresultat:");
+                Console.WriteLine(match2.ResultString());
+            
         }
 
     }

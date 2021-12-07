@@ -727,4 +727,187 @@ namespace PadelTest
             Assert.Equal(expected, match.ResultString());
         }
     }
+
+    public class SetTest
+    {
+        [Fact]
+        public void SetCreationDefault_Test()
+        {
+            Player player1 = new Player("ferri");
+            Player player2 = new Player("fredric");
+
+            Set set1 = new Set(player1, player2);
+
+
+            Assert.False(set1.setOver);
+            Assert.Equal(0, set1.gameIndex);
+            Assert.Equal(0, set1.setScore.player1._Score);
+            Assert.Equal(0, set1.setScore.player2._Score);
+            Assert.Equal("ferri", set1[set1.gameIndex].Player1.Name);
+            Assert.Equal("fredric", set1[set1.gameIndex].Player2.Name);
+
+        }
+
+        [Fact]
+        public void SetWonByPlayer2_Test()
+        {
+            Player player1 = new Player("ferri");
+            Player player2 = new Player("fredric");
+
+            Set set1 = new Set(player1, player2);
+
+            for (int i = 0; i < 18; i++)
+            {
+                set1.Point(player1);
+            }
+            for (int i = 0; i < 24; i++)
+            {
+                set1.Point(player2);
+            }
+
+            Assert.Equal("Player 2 wins the set", set1.ScoreString());
+
+        }
+
+        [Fact]
+        public void SetsWonByPlayer1_Test()
+        {
+            Player player1 = new Player("carl-henrik");
+            Player player2 = new Player("fredric");
+
+            Set set1 = new Set(player1, player2);
+
+            for (int i = 0; i < 24; i++)
+            {
+                set1.Point(player1);
+            }
+
+            Assert.Equal("Player 1 wins the set", set1.ScoreString());
+        }
+
+        [Fact]
+        public void DublicatePlayerName_Test()
+        {
+            Player player1 = new Player("ferri");
+            Player player2 = new Player("ferri");
+
+            Action act1 = () => new Set(player1, player2);
+
+            Assert.Throws<Exception>(act1);
+        }
+
+        [Fact]
+        public void PointsToUnauthorizedPlayer_Test()
+        {
+            Player player1 = new Player("fredic");
+            Player player2 = new Player("carl-henrik");
+            Player player3 = new Player("ferri");
+
+            Set set1 = new Set(player1, player2);
+
+            Action act1 = () => set1.Point(player3);
+
+            Assert.Throws<Exception>(act1);
+        }
+
+        [Fact]
+        public void Player1Player2SameReference_Test()
+        {
+            Player player1 = new Player("ferri");
+
+            Action act1 = () => new Set(player1, player1);
+
+            Assert.Throws<Exception>(act1);
+        }
+
+        [Fact]
+        public void Tiebreaker_Test()
+        {
+            Player player1 = new Player("calr-henrik");
+            Player player2 = new Player("ferri");
+            Set set1 = new Set(player1, player2);
+
+
+
+            for (int i = 0; i < 20; i++)
+            {
+                set1.Point(player1);
+
+
+
+            }
+            for (int i = 0; i < 24; i++)
+            {
+                set1.Point(player2);
+
+
+            }
+            for (int i = 0; i < 4; i++)
+            {
+                set1.Point(player1);
+            }
+            Assert.True(set1._games[set1.gameIndex].tiebreak);
+            Assert.Equal($"6-6", set1.ScoreString());
+        }
+
+        [Fact]
+        public void Player1WinAfterTiebreaker_Test()
+        {
+            Player player1 = new Player("calr-henrik");
+            Player player2 = new Player("ferri");
+            Set set1 = new Set(player1, player2);
+
+
+
+            for (int i = 0; i < 20; i++)
+            {
+                set1.Point(player1);
+
+
+
+            }
+            for (int i = 0; i < 24; i++)
+            {
+                set1.Point(player2);
+
+
+            }
+            for (int i = 0; i < 11; i++)
+            {
+                set1.Point(player1);
+            }
+            Assert.True(set1._games[set1.gameIndex - 1].tiebreak);
+            Assert.Equal($"Player 1 wins the set after Tiebreak", set1.ScoreString());
+        }
+        [Fact]
+        public void Player2WinAfterTiebreaker_Test()
+        {
+            Player player1 = new Player("calr-henrik");
+            Player player2 = new Player("ferri");
+            Set set1 = new Set(player1, player2);
+
+
+
+            for (int i = 0; i < 20; i++)
+            {
+                set1.Point(player2);
+
+
+
+            }
+            for (int i = 0; i < 24; i++)
+            {
+                set1.Point(player1);
+
+
+            }
+            for (int i = 0; i < 11; i++)
+            {
+                set1.Point(player2);
+            }
+            Assert.True(set1._games[set1.gameIndex - 1].tiebreak);
+            Assert.Equal($"Player 2 wins the set after Tiebreak", set1.ScoreString());
+        }
+
+    }
 }

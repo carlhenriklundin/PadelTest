@@ -6,6 +6,7 @@ namespace Padel
     public class Set
     {
         public List<Game> _games = new List<Game>();
+        public Game this[int idx] => _games[idx];
         public Player _player1;
         public Player _player2;
         public (Score player1, Score player2) setScore;
